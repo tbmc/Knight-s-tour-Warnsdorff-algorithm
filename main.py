@@ -1,7 +1,7 @@
 class WarnsdorffAlgorithm:
 
     board = [[]]
-    move_counter = 0
+    move_counter = 1
     __moves = (
         (2, 1),
         (2, -1),
@@ -38,32 +38,27 @@ class WarnsdorffAlgorithm:
             if not self.__is_cell_available(ll, cc):
                 continue
             cells = self.__get_accessible_cells(ll, cc)
-            length = len(cells)
-            if length < 1:
-                continue
-            cell_accessibilities.append((length, (ll, cc)))
+            cell_accessibilities.append((len(cells), (ll, cc)))
         if len(cell_accessibilities) < 1:
             return None
         _, coordinates = min(cell_accessibilities)
         return coordinates
 
     def __resolve_recursive(self, line, col):
+        self.board[line][col] = self.move_counter
+        self.move_counter += 1
         less_accessible_cell = self.__get_less_accessible_cell(line, col)
         if less_accessible_cell is None:
             return
         line, col = less_accessible_cell
         if not self.__is_cell_available(line, col):
             return
-        self.board[line][col] = self.move_counter
-        self.move_counter += 1
 
         self.__resolve_recursive(line, col)
 
     def resolve(self, start_line=0, start_column=0):
         if not self.__is_cell_available(start_line, start_column):
             return
-        self.board[start_line][start_column] = self.move_counter
-        self.move_counter += 1
         self.__resolve_recursive(start_line, start_column)
 
     def print(self):
@@ -79,5 +74,5 @@ class WarnsdorffAlgorithm:
 
 if __name__ == "__main__":
     warn = WarnsdorffAlgorithm()
-    warn.resolve(0, 4)
+    warn.resolve()
     warn.print()
